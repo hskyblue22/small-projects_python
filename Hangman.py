@@ -4,7 +4,7 @@ words = ["calender", "book", "laptop", "pencil"]  # 리스트 요소마다 "" �
 word = choice(words)
 print("answer : " + word)
 letters =""                                       # 사용자로부터 지금까지 받은 알파벳
-
+count = 10
 
 while True:
     succeed = True                    # succeed = True 라고 먼저 가정해 놓고 
@@ -27,8 +27,15 @@ while True:
     if letter not in letters:  # letters에 없는 letter만 추가시킨다.
         letters += letter      # letters에 letter추가시킴!!
         # print(letters)       사용자가 알파벳 입력할때마다 e , el, elb, elbt와 같이 letters에 하나씩 추가됨
+        count -= 1
+        print("남은 기회: {}".format(count)) 
+        if count == 0:
+            print("Game Over") 
+            break 
     if letter in word:
         print("*딩동댕*")
 
     else:
         print("*땡*")
+
+# 출처: 나도코딩
