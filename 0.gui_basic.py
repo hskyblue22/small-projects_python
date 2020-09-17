@@ -5,7 +5,7 @@ root.title("Hwangpenguin")
 root.geometry("480x640+900+100")      # 소문자 x써야함 
 
 root.resizable(True,False)            # x,y 창 크기 변경
-
+'''
 btn1 = Button(root, text = "버튼1")
 btn1.pack()                           # .pack(): 적어줘야 버튼 보임
 
@@ -21,7 +21,7 @@ btn4.pack()
 # photo = PhotoImage(file="heart.png")                     # small-projects_python\ 붙이니까 오류남
 # btn5 = Button(root,image = photo)
 # btn5.pack()
-
+'''
 
 def btncmd():
     print("버튼 클릭!!")
@@ -76,6 +76,62 @@ def listcmd():
 
 btn_list=Button(root,text="listbox_Click",command=listcmd)
 btn_list.pack()
+
+
+# 체크박스: 값 2개 중 택일 / 각 체크박스마다 variable에 각각 다른 값 넣어줘야 함
+
+chk_var1 = IntVar()                        # chk_var에 Int형으로 값을 저장
+chkbox = Checkbutton(root,text="체크하세요",variable=chk_var1)     # 체크박스: 변수에 값을 저장해서 씀
+chkbox.select()
+chkbox.pack()
+
+chk_var2 = IntVar()                              
+chkbox2 = Checkbutton(root,text="체크!",variable=chk_var2)
+chkbox2.pack()
+
+
+def chkcmd():
+    print(chk_var1.get())                # 0: 체크해제  1: 체크
+    print(chk_var2.get())      
+
+btn1 = Button(root,text="체크박스",command=chkcmd)
+btn1.pack() 
+
+
+
+# 라디오버튼: 여러개 값 중 택일 / 각 버튼마다 variable에 각각 다른 값 넣지 않고 같은 값 넣어서 통째로 함!
+
+Label(root,text="메뉴를 선택하세요").pack()
+
+burger_var= IntVar()                    # Int 형으로 저장
+btn_burger1= Radiobutton(root,text="햄버거",value=1,variable=burger_var)
+btn_burger1.select()
+btn_burger2= Radiobutton(root,text="치즈버거",value=2,variable=burger_var)
+btn_burger3= Radiobutton(root,text="치킨버거",value=3,variable=burger_var)
+
+btn_burger1.pack()
+btn_burger2.pack()
+btn_burger3.pack()
+
+
+Label(root,text="주스를 선택하세요").pack()
+
+juice_var= StringVar()
+btn_juice1= Radiobutton(root,text="콜라",value="콜라",variable=juice_var) 
+btn_juice1.select()
+btn_juice2= Radiobutton(root,text="사이다",value="사이다",variable=juice_var)
+btn_juice3= Radiobutton(root,text="오렌지주스",value="오렌지주스",variable=juice_var)
+
+btn_juice1.pack()
+btn_juice2.pack()
+btn_juice3.pack()
+
+def radiocmd():
+    print(burger_var.get())             # 선택한 값의 value 반환(1,2,3)
+    print(juice_var.get())
+intbtn= Button(root,text="라디오버튼1",command=radiocmd)
+intbtn.pack()
+
 
 
 root.mainloop()
