@@ -11,7 +11,7 @@ label1.pack()
 
 wall = PhotoImage(file = "best.png")
 wall_label = Label(root, image=wall)
-wall_label.place(x=-2,y=120)
+wall_label.place(x=-2,y=120)         # x=0, y=0으로 하고 이미지 봐서 조정함
 
 
 def change():
