@@ -1,8 +1,8 @@
 from tkinter import *
 
-root = Tk()                           # Tk 클래스 객체
+root = Tk()                          # Tk 클래스 객체(인스턴스)인 root생성, Tk클래스를 이용해 GUI위젯을 가질 수 있는 창 생성
 root.title("Hwangpenguin")
-root.geometry("480x640+900+100")      # 소문자 x써야함 
+root.geometry("480x640+900+100")     # 소문자 x써야함 
 
 root.resizable(True,True)            # x,y 창 크기 변경
 '''
@@ -25,6 +25,8 @@ btn4.pack()
 
 
 # 버튼에 command넣기
+# 위젯클래스의 첫번째 인자(argument) ==> 부모 컨테이너
+# 컨테이너: 위젯이 배치되는 곳
 '''
 def btncmd():
     print("버튼 클릭!!")
@@ -34,7 +36,7 @@ btn6.pack()
 '''
 
 txt= Text(root,width=20,height=1)      # enter 가능 / 여러줄 입력받을 수 있다.
-txt.pack()
+txt.pack()                             # 컨테이너에 위치시키는 명령어
 txt.insert(END,"글자를 입력하세요")
 
 e= Entry(root,width=20)               # enter 불가능. 한줄로 입력받는 아이디,비번 같은 경우
@@ -256,16 +258,25 @@ Button(root,text="예 / 아니오 / 취소",command=yesnocancel).pack()
 Label(root, text="메뉴를 선택해주세요").pack(side= "top")    # side = "top" ==> 레이블 위치 설정
 Button(root,text= "주문하기").pack(side = "bottom")         # 버튼 아래에 위치시키기
 
-icecream_frame = Frame(root,relief="solid",  bd=1)
-icecream_frame.pack(side= "left", fill = "both", expand = True)
+icecream_frame = Frame(root, relief= "solid", bd=2)         # relief = "solid" : 외곽 윤곽선 표시 / bd: 윤곽선 굵기
+icecream_frame.pack(side= "left", fill = "both", expand = True)  # fill: 위아래로 채우기 / expend=True: 중앙으로 가게끔 펼치기
 
 Button(icecream_frame, text= "딸기").pack()
 Button(icecream_frame, text= "바닐라").pack()
 Button(icecream_frame, text= "망고").pack()
-# check_bar = StringVar()                              
-# Checkbutton(root,text="바닐라",variable= check_bar).pack()
-# Checkbutton(root,text="딸기",variable= check_bar).pack()
-# Checkbutton(root,text="망고",variable= check_bar).pack()
+# # check_bar = StringVar()                              
+# Button(icecream_frame, text= "망고").pack()
+# Checkbutton(root,text="바닐라",variable= icecream_frame).pack()
+# Checkbutton(root,text="딸기",variable= icecream_frame).pack()
+# Checkbutton(root,text="망고",variable= icecream_frame).pack()
+
+juice_frame = LabelFrame(root,text="음료")
+juice_frame.pack(side="right",fill="both", expand=True)
+
+Button(juice_frame, text="콜라").pack()
+Button(juice_frame, text="오렌지쥬스").pack()
+
+
 
 
 root.mainloop()
