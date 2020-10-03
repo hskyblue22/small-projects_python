@@ -54,21 +54,83 @@ def browse_dest_path():
 
 # 이미지 통합
 def merge_image():
-    # print(list_file.get(0, END))           # 모든 파일목록 가져옴
-    images = [Image.open(x) for x in list_file.get(0, END)]
+
+    # 옵션 조정!
+
+    # 가로너비
+    img_width = combo_width.get()
+    if img_width == "원본유지":
+        img_width = -1           # -1일때는 원본 유지
+    else:
+        img_width = int(img_width)
+
+    # 간격 
+    img_gap = combo_gap.get()
+    if img_gap == "좁음":
+        img_gap = 30
+    elif img_gap == "보통":
+        img_gap = 60
+    elif img_gap == "넓음":
+        img_gap = 90
+    else:
+        img_gap =0
+
+    # 포맷
+    img_format = combo_format.get().lower()      # JPG, PNG, BMP값을 받아와서 소문자로 변경
+
+#############################################################
+
+
+    images = [Image.open(x) for x in list_file.get(0, END)]     # 모든 파일목록 가져옴
+
+
     # size[0] => width  /  size[1] => height
-    widths = [x.size[0] for x in images]     # for x in images : x정의 필요하다
-    heights = [x.size[1] for x in images]
+    # widths = [x.size[0] for x in images]     # for x in images : x정의 필요하다
+    # heights = [x.size[1] for x in images]
+    # [(10,10), (20,30), (40,30)] 이렇게 너비, 높이 들어있었음
+
+    img_sizes = []    # [(width1, height1), (width2, height2),...]
+    if img_width > -1:          
+        # width값 변경 -> height값도 변경되어야 함
+        image_sizes = [ (int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+
+    else:
+        #원본 사이즈 사용  /  [ ( , ) ] 튜플에 넣어주기
+        image_sizes = [(x.size[0], x.size[1]) for x in images]   
+
+
+
+    widths, heights = zip(*(image_sizes))            # play 폴더_zip.py 참고
 
     # 너비: 사진들 중 최대값, 높이: 사진들 높이 전체합
     total_width, total_heights = max(widths), sum(heights) 
 
 
-    # 스케치북 준비 (왜 새로운 이미지를 만드는 거지?)
+    # 스케치북 준비
+    if img_gap >0:     # 이미지 간격옵션 적용
+        total_heights += (img_gap * (len(images)-1))
+
     result_img = Image.new("RGB", (total_width, total_heights), (255,255,255))
     y_offset = 0      # 사진이 아래로 차곡차곡 이어질 수 있도록 (만약 가로로 이어진 사진을 보여주고 싶다면? x_offset사용)
+    # for img in images:
+    #     x_middle = round((total_width - img.size[0])/2)
+    #     result_img.paste(img, (x_middle, y_offset))   # y_offset= 0
+    #     y_offset += img.size[1]                # y_offset에 각 사진 높이 더해줘서 바로 사진 붙여질 수 있게
 
+    for idx, img in enumerate(images):
+        # 스케치북에 img붙일때 resizing해줘야 함
+        # width가 원본이 아닐때에는 width 조정해 줘야함
 
+        if img_width > -1:
+            img = img.resize(image_sizes[idx])     # .resize((225,225))
+
+        result_img.paste(img, (0, y_offset))
+        y_offset += ( img.size[1] + img_gap )      # height값 + 사용자가 지정한 간격
+
+        progress = (idx + 1) / len(images) *100   # 실제 percent정보를 계산
+        p_var.set(progress)
+        progress_bar.update()
+    
     '''
     result_img.paste(img, (0, y_offset)) => 사진이 중간에 위치X , x=0좌표에 붙어있어서 크기가 다른 사진들일경우
     다 왼쪽에 붙어있어서 보기가 좋지않다.
@@ -76,12 +138,10 @@ def merge_image():
     ===> round(): 소수(예: 335.5)는 .paste의 좌표로 쓰일 수 없다고 오류가 떠서
          올림을 해서 integer(정수) 형식으로 맞춰주었다. 
     '''
-    for img in images:
-        x_middle = round((total_width - img.size[0])/2)
-        result_img.paste(img, (x_middle, y_offset))   # y_offset= 0
-        y_offset += img.size[1]                # y_offset에 각 사진 높이 더해줘서 바로 사진 붙여질 수 있게
-
-    save_path = os.path.join(txt_path.get(),"h_phto.jpg")    # h_phton.jpg 이름으로 새 경로 생성
+    
+    # 포맷옵션 처리
+    file_name = "h_photo." + img_format
+    save_path = os.path.join(txt_path.get(), file_name)    # h_phton.jpg 이름으로 새 경로 생성
     result_img.save(save_path)                 # 저장경로 entry에 입력된 곳에 사진 저장 
     msgbox.showinfo("알림", "작업이 완료되었습니다.")
     
@@ -165,7 +225,7 @@ frame_lbl = Label(frame_option,text="포맷",width=8)
 frame_lbl.pack(side= "left", padx= 5, pady= 5)
 
 # 포맷 콤보박스
-v_format= ["PNG","JPG","GMP"]
+v_format= ["PNG","JPG","BMP"]
 combo_format= ttk.Combobox(frame_option, values= v_format, state="readonly", width=8)
 combo_format.current(0)
 combo_format.pack(side= "left", padx= 5, pady= 5)
@@ -177,8 +237,8 @@ frame_progress = LabelFrame(root, text= "진행상황")
 frame_progress.pack(fill="x", padx= 5, pady= 5)
 
 p_var = DoubleVar()
-progress_var = ttk.Progressbar(frame_progress, maximum = 100, variable= p_var)
-progress_var.pack(fill="x", padx= 5, pady= 5)
+progress_bar = ttk.Progressbar(frame_progress, maximum = 100, variable= p_var)
+progress_bar.pack(fill="x", padx= 5, pady= 5)
 
 
 # 실행 프레임 만들기
