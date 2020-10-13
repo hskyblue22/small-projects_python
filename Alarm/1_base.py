@@ -2,8 +2,14 @@ from tkinter import *
 import datetime
 import time
 import winsound
-import tkinter.messagebox as msgbox 
-# from datetime import datetime      # datetime 라이브러리_now함수로 현재 날짜,시간 호출 *
+import tkinter.messagebox as msgbox
+import threading
+from pygame import mixer 
+import playsound
+ 
+
+
+# mixer.init()
 
 def th():
     t1= threading.Thread(target=set_alarm, args=())
@@ -16,11 +22,11 @@ def update_timelabel():
     # timelabel 값 바꿔주기
     timelabel1.configure(text=current_date)
     timelabel2.configure(text=current_time)
-    # Call the update_timeText() function after 1 second
+    # update_timelabel()함수를 1초마다 호출
     root.after(1000, update_timelabel)
 
 # set버튼 클릭
-def set_alarm(event):
+def set_alarm():
     # hour 입력 확인
     # h = int(hourTime.get())
     if hourTime.index("end") ==0:
@@ -67,7 +73,12 @@ def set_alarm(event):
 
 
     if user_hour == now_hour and user_min == now_min : 
-        msgbox.showinfo("알림","It is time")  
+        # mixer.music.load('sea_waves.wav')
+	    # mixer.music.play()
+        
+        msg= msgbox.showinfo("알림","It is time")  
+        playsound.playsound('sea_waves.wav', True)
+       # 재생시간 공부 필요
 
 
 root = Tk()
